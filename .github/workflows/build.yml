@@ -1,0 +1,109 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: build (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest,  target: x86_64-unknown-linux-gnu,  exe: cls,     archive: tar.gz }
+          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu, exe: cls,   archive: tar.gz }
+          - { os: macos-latest,   target: aarch64-apple-darwin,      exe: cls,     archive: tar.gz }
+          - { os: macos-13,       target: x86_64-apple-darwin,       exe: cls,     archive: tar.gz }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc,    exe: cls.exe, archive: zip }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - name: Build (release)
+        run: cargo build --release --locked
+
+      - name: Unit tests
+        run: cargo test --release --locked
+
+      - name: Language, header and example tests
+        shell: bash
+        run: |
+          CLS="$PWD/target/release/${{ matrix.exe }}"
+          (cd tests/fixtures/lang    && "$CLS" test)
+          (cd tests/fixtures/headers && "$CLS" test)
+          (cd examples/projecttools  && "$CLS" test)
+
+      - name: Package
+        shell: bash
+        run: |
+          name="cls-${{ matrix.target }}"
+          mkdir -p "dist/$name"
+          cp "target/release/${{ matrix.exe }}" README.md SPEC.md "dist/$name/"
+          cd dist
+          if [ "${{ matrix.archive }}" = "zip" ]; then
+            7z a "$name.zip" "$name" >/dev/null
+          else
+            tar -czf "$name.tar.gz" "$name"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cls-${{ matrix.target }}
+          path: dist/cls-${{ matrix.target }}.${{ matrix.archive }}
+          if-no-files-found: error
+
+  integration:
+    name: MCP client compatibility (${{ matrix.sdk }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sdk: ["mcp<2", "mcp>=2"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "${{ matrix.sdk }}"
+      - run: cargo build --release --locked
+      - name: Permission, limit and cancellation tests
+        env:
+          CLS: ${{ github.workspace }}/target/release/cls
+        run: |
+          python tests/fixtures/perms/run.py
+          python tests/stdio_limits.py
+      - name: MCP SDK (stdio + Streamable HTTP)
+        env:
+          CLS: ${{ github.workspace }}/target/release/cls
+        run: python tests/integration.py
+
+  release:
+    name: release
+    needs: [build, integration]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true
