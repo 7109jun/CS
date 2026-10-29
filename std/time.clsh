@@ -1,0 +1,5 @@
+// std/time
+declare function now(): number;
+declare function sleep(ms: number): Promise<void>;
+declare function iso(ms?: number): string;
+declare function parseIso(text: string): number;

@@ -1,0 +1,8 @@
+// std/regex — regular expressions (RE2-style syntax, no backreferences).
+interface Match { text: string; index: number; groups: (string | null)[] }
+
+declare function test(pattern: string, text: string): boolean;
+declare function find(pattern: string, text: string): Match | null;
+declare function findAll(pattern: string, text: string): Match[];
+declare function replaceAll(pattern: string, text: string, replacement: string): string;
+declare function split(pattern: string, text: string): string[];

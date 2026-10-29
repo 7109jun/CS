@@ -1,0 +1,18 @@
+// std/http — HTTP client (subject to [permissions].network).
+interface FetchOptions {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: string;
+  timeoutSeconds?: number;
+}
+interface HttpResponse {
+  status: number;
+  ok: boolean;
+  headers: Record<string, string>;
+  body: string;
+}
+
+declare function fetch(url: string, options?: FetchOptions): Promise<HttpResponse>;
+declare function getText(url: string, headers?: Record<string, string>): Promise<string>;
+declare function getJson(url: string, headers?: Record<string, string>): Promise<unknown>;
+declare function postJson(url: string, body: unknown, headers?: Record<string, string>): Promise<unknown>;

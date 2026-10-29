@@ -1,0 +1,25 @@
+[project]
+name = "ProjectTools"
+version = "1.0.0"
+entry = "src/main.cls"
+
+[compiler]
+strict_types = true
+warnings_as_errors = false
+
+[mcp]
+protocol = "2025-11-25"
+transport = "stdio"
+
+[permissions]
+filesystem = "project"
+network = "deny"
+process = "deny"
+environment = "allowlisted"
+env_allow = ["HOME"]
+
+[limits]
+max_execution_seconds = 5
+max_concurrent_requests = 16
+max_input_bytes = 1048576
+max_output_bytes = 4194304

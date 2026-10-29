@@ -1,0 +1,15 @@
+// std/fs — filesystem access (subject to [permissions].filesystem).
+interface DirEntry { name: string; path: string; isDir: boolean; size: number }
+interface FileStat { isDir: boolean; isFile: boolean; size: number; modifiedMs: number }
+
+declare function readFile(path: string): Promise<string>;
+declare function readFileBase64(path: string): Promise<string>;
+declare function writeFile(path: string, content: string): Promise<void>;
+declare function appendFile(path: string, content: string): Promise<void>;
+declare function readDir(path: string, recursive?: boolean): Promise<DirEntry[]>;
+declare function exists(path: string): Promise<boolean>;
+declare function stat(path: string): Promise<FileStat | null>;
+declare function mkdir(path: string, recursive?: boolean): Promise<void>;
+declare function remove(path: string, recursive?: boolean): Promise<void>;
+declare function rename(from: string, to: string): Promise<void>;
+declare function copyFile(from: string, to: string): Promise<void>;

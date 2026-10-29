@@ -1,0 +1,141 @@
+// Claudescript prelude: globally available types and functions.
+
+interface Error { name: string; message: string }
+declare function Error(message: string): Error;
+declare function TypeError(message: string): Error;
+declare function RangeError(message: string): Error;
+
+interface ArrayMethods<T> {
+  length: number;
+  push(...items: T[]): number;
+  pop(): T | null;
+  shift(): T | null;
+  unshift(...items: T[]): number;
+  slice(start?: number, end?: number): T[];
+  splice(start: number, deleteCount?: number, ...items: T[]): T[];
+  concat(...others: T[][]): T[];
+  map<U>(f: (x: T, i: number) => U): U[];
+  flatMap<U>(f: (x: T, i: number) => U[]): U[];
+  filter(f: (x: T, i: number) => boolean): T[];
+  forEach(f: (x: T, i: number) => void): void;
+  reduce<U>(f: (acc: U, x: T, i: number) => U, init: U): U;
+  find(f: (x: T, i: number) => boolean): T | null;
+  findIndex(f: (x: T, i: number) => boolean): number;
+  some(f: (x: T, i: number) => boolean): boolean;
+  every(f: (x: T, i: number) => boolean): boolean;
+  includes(x: T): boolean;
+  indexOf(x: T): number;
+  lastIndexOf(x: T): number;
+  join(sep?: string): string;
+  reverse(): T[];
+  sort(cmp?: (a: T, b: T) => number): T[];
+  fill(v: T): T[];
+  at(i: number): T | null;
+}
+
+interface StringMethods {
+  length: number;
+  charAt(i: number): string;
+  charCodeAt(i: number): number;
+  indexOf(s: string, from?: number): number;
+  lastIndexOf(s: string): number;
+  includes(s: string): boolean;
+  startsWith(s: string): boolean;
+  endsWith(s: string): boolean;
+  slice(start?: number, end?: number): string;
+  substring(start: number, end?: number): string;
+  toUpperCase(): string;
+  toLowerCase(): string;
+  trim(): string;
+  trimStart(): string;
+  trimEnd(): string;
+  split(sep: string, limit?: number): string[];
+  replace(search: string, replacement: string): string;
+  replaceAll(search: string, replacement: string): string;
+  repeat(n: number): string;
+  padStart(n: number, fill?: string): string;
+  padEnd(n: number, fill?: string): string;
+  at(i: number): string | null;
+  concat(...others: string[]): string;
+  localeCompare(other: string): number;
+}
+
+interface NumberMethods {
+  toFixed(digits?: number): string;
+  toString(radix?: number): string;
+}
+
+interface BooleanMethods {
+  toString(): string;
+}
+
+declare const console: {
+  log(...args: unknown[]): void;
+  info(...args: unknown[]): void;
+  warn(...args: unknown[]): void;
+  error(...args: unknown[]): void;
+  debug(...args: unknown[]): void;
+};
+
+declare const Math: {
+  PI: number;
+  E: number;
+  floor(x: number): number;
+  ceil(x: number): number;
+  round(x: number): number;
+  trunc(x: number): number;
+  abs(x: number): number;
+  sign(x: number): number;
+  sqrt(x: number): number;
+  cbrt(x: number): number;
+  pow(base: number, exp: number): number;
+  min(...xs: number[]): number;
+  max(...xs: number[]): number;
+  random(): number;
+  log(x: number): number;
+  log2(x: number): number;
+  log10(x: number): number;
+  exp(x: number): number;
+  sin(x: number): number;
+  cos(x: number): number;
+  tan(x: number): number;
+  atan(x: number): number;
+  atan2(y: number, x: number): number;
+  hypot(...xs: number[]): number;
+};
+
+declare const JSON: {
+  stringify(value: unknown, indent?: number): string;
+  parse(text: string): unknown;
+};
+
+declare const Object: {
+  keys(o: Record<string, unknown>): string[];
+  values<T>(o: Record<string, T>): T[];
+  entries<T>(o: Record<string, T>): [string, T][];
+  fromEntries<T>(entries: [string, T][]): Record<string, T>;
+};
+
+declare const Promise: {
+  resolve<T>(value: T): Promise<T>;
+  reject<T>(reason: Error): Promise<T>;
+  all<T>(promises: Promise<T>[]): Promise<T[]>;
+  race<T>(promises: Promise<T>[]): Promise<T>;
+  allSettled<T>(promises: Promise<T>[]): Promise<({ status: "fulfilled"; value: T } | { status: "rejected"; reason: Error })[]>;
+};
+
+declare function String(x: unknown): string;
+declare function Number(x: unknown): number;
+declare function Boolean(x: unknown): boolean;
+declare function parseInt(s: string, radix?: number): number;
+declare function parseFloat(s: string): number;
+declare function isNaN(n: number): boolean;
+declare function isFinite(n: number): boolean;
+declare function isInteger(n: number): boolean;
+
+declare function assert(condition: boolean, message?: string): void;
+declare function assertEq<T>(actual: T, expected: T, message?: string): void;
+declare function assertNe<T>(actual: T, expected: T, message?: string): void;
+declare function assertThrows(f: () => unknown, message?: string): Error;
+declare function assertRejects(p: Promise<unknown>, message?: string): Promise<Error>;
+declare function deepEqual(a: unknown, b: unknown): boolean;

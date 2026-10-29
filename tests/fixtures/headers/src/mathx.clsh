@@ -1,0 +1,3 @@
+interface Range { lo: number; hi: number }
+declare function clamp(x: number, r: Range): number;
+declare const DEFAULT_RANGE: Range;

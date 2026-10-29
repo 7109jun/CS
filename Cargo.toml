@@ -1,0 +1,14 @@
+[package]
+name = "cls"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+getrandom = "0.4.3"
+indexmap = "2.14.2"
+regex = "1.13.1"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = { version = "1.0.154", features = ["preserve_order"] }
+sha2 = "0.11.1"
+toml = "1.1.8"
+ureq = "3.5.0"

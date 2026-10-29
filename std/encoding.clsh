@@ -1,0 +1,7 @@
+// std/encoding
+declare function base64Encode(s: string): string;
+declare function base64Decode(s: string): string;
+declare function hexEncode(s: string): string;
+declare function hexDecode(s: string): string;
+declare function urlEncode(s: string): string;
+declare function urlDecode(s: string): string;

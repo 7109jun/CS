@@ -1,0 +1,4 @@
+// std/crypto
+declare function sha256Hex(s: string): string;
+declare function uuid(): string;
+declare function randomHex(bytes: number): string;

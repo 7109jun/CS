@@ -1,0 +1,18 @@
+// std/mcp — MCP-specific helpers and result types.
+type LogLevel = "debug" | "info" | "notice" | "warning" | "error" | "critical" | "alert" | "emergency";
+
+interface TextContent { type: "text"; text: string }
+interface ImageContent { type: "image"; data: string; mimeType: string }
+interface ToolResult {
+  content: (TextContent | ImageContent)[];
+  structuredContent?: Record<string, unknown>;
+  isError?: boolean;
+}
+interface ResourceContent { text?: string; blob?: string; mimeType?: string }
+interface PromptMessage { role: "user" | "assistant"; text: string }
+
+declare function text(s: string): ToolResult;
+declare function image(base64Data: string, mimeType: string): ToolResult;
+declare function errorResult(message: string): ToolResult;
+declare function progress(current: number, total?: number, message?: string): void;
+declare function log(level: LogLevel, message: string): void;

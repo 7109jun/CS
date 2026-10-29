@@ -1,0 +1,5 @@
+// std/process — run external programs without a shell (subject to [permissions].process).
+interface ExecOptions { cwd?: string; input?: string; timeoutSeconds?: number }
+interface ExecResult { code: number; stdout: string; stderr: string }
+
+declare function exec(command: string, args?: string[], options?: ExecOptions): Promise<ExecResult>;
